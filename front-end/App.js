@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, ImageBackground } from 'react-native';
+import EmergencyPage from './EmergencyPage';
 
 const WeatherApp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState('home');
 
     const fetchWeatherData = async () => {
         try {
             const response = await fetch(
                 'https://cors-anywhere.herokuapp.com/http://5.161.242.174/api-tempo.php'
-            ); // Proxy para HTTPS
+            );
             const data = await response.json();
             setWeatherData(data);
             setIsLoading(false);
@@ -41,49 +43,55 @@ const WeatherApp = () => {
         );
     }
 
+    if (currentPage === 'emergency') {
+        return <EmergencyPage setCurrentPage={setCurrentPage} />;
+    }
+
     return (
         <View style={styles.container}>
             {/* Card Superior com Clima */}
-            <View style={styles.card}>
-                <ImageBackground
-                    source={{ uri: 'https://via.placeholder.com/300x200' }} // Substitua por sua imagem de fundo
-                    style={styles.weatherBackground}
-                    imageStyle={{ borderRadius: 20 }}
-                >
-                    <Text style={styles.temperature}>{Math.round(weatherData.temperature)}°</Text>
-                    <View style={styles.iconRow}>
-                        <View style={styles.iconItem}>
-                            <Text style={styles.iconText}>💨</Text>
-                            <Text style={styles.label}>{weatherData.wind} km/h</Text>
-                        </View>
-                        <View style={styles.iconItem}>
-                            <Text style={styles.iconText}>💧</Text>
-                            <Text style={styles.label}>{weatherData.humidity}%</Text>
-                        </View>
-                        <View style={styles.iconItem}>
-                            <Text style={styles.iconText}>🌧️</Text>
-                            <Text style={styles.label}>{weatherData.condition}</Text>
-                        </View>
+            <ImageBackground
+                source={require('./assets/fundo.png')}
+                style={styles.card}
+                imageStyle={styles.backgroundImage}
+            >
+                <Text style={styles.temperature}>{Math.round(weatherData.temperature)}°</Text>
+                {/* Ícone abaixo da temperatura */}
+                <Image
+                    source={require('./assets/nublado.png')}
+                    style={styles.weatherIcon}
+                />
+                <View style={styles.iconRow}>
+                    <View style={styles.iconItem}>
+                        <Text style={styles.iconText}>💨</Text>
+                        <Text style={styles.label}>{weatherData.wind} km/h</Text>
                     </View>
-                </ImageBackground>
-            </View>
+                    <View style={styles.iconItem}>
+                        <Text style={styles.iconText}>💧</Text>
+                        <Text style={styles.label}>{weatherData.humidity}%</Text>
+                    </View>
+                    <View style={styles.iconItem}>
+                        <Text style={styles.iconText}>🌧️</Text>
+                        <Text style={styles.label}>{weatherData.condition}</Text>
+                    </View>
+                </View>
+            </ImageBackground>
 
             {/* Seção de Informações */}
             <View style={styles.infoSection}>
-                <Text style={styles.infoTitle}>INFO</Text>
                 <Text style={styles.infoText}>{weatherData.info}</Text>
             </View>
 
             {/* Barra de Navegação */}
             <View style={styles.navigationBar}>
-                <TouchableOpacity style={styles.navButton}>
-                    <Text style={[styles.navText, styles.activeNav]}>Home</Text>
+                <TouchableOpacity style={styles.navButton} onPress={() => setCurrentPage('home')}>
+                    <Text style={styles.navText}>Home</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.navButton} onPress={() => setCurrentPage('emergency')}>
+                    <Text style={styles.navText}>Emergência</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.navButton}>
-                    <Text style={styles.navText}>Ultimas</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.navButton}>
-                    <Text style={styles.navText}>Login</Text>
+                    <Text style={styles.navText}>Loja</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -99,18 +107,25 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         marginBottom: 20,
-    },
-    weatherBackground: {
-        flex: 1,
+        borderRadius: 20,
+        overflow: 'hidden',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 20,
+        paddingBottom: 10,
+    },
+    backgroundImage: {
         borderRadius: 20,
+        width: '100%',
     },
     temperature: {
-        fontSize: 50,
+        fontSize: 90,
         color: '#fff',
         fontWeight: 'bold',
+    },
+    weatherIcon: {
+        marginTop: 2, // Espaçamento abaixo da temperatura
+        width: 180,
+        height: 180,
     },
     iconRow: {
         flexDirection: 'row',
@@ -121,33 +136,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconText: {
-        fontSize: 24,
+        fontSize: 60,
         color: '#fff',
     },
     label: {
         color: '#fff',
-        fontSize: 12,
+        fontSize: 24,
     },
     infoSection: {
         flex: 0.5,
         padding: 10,
+        marginBottom: 20,
         backgroundColor: '#121212',
         borderRadius: 20,
     },
-    infoTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff',
-        marginBottom: 10,
-    },
     infoText: {
-        fontSize: 14,
+        fontSize: 28,
         color: '#aaa',
     },
     navigationBar: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        backgroundColor: '#1E1E1E',
+        backgroundColor: '#888888',
         paddingVertical: 10,
         borderRadius: 20,
     },
@@ -156,7 +166,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     navText: {
-        fontSize: 16,
+        fontSize: 22,
         color: '#fff',
     },
     activeNav: {
