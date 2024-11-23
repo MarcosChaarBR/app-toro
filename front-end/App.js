@@ -6,6 +6,16 @@ const WeatherApp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState('home');
+    const [testAlertMode, setTestAlertMode] = useState(false); 
+    
+
+    const conditionIcons = {
+        chuvoso: require('./assets/chuvoso.png'),
+        ensolarado: require('./assets/ensolarado.png'),
+        nublado: require('./assets/nublado.png'),
+        tempestade: require('./assets/tempestade.png'),
+        ventania: require('./assets/ventania.png'),
+    };
 
     const fetchWeatherData = async () => {
         try {
@@ -24,7 +34,7 @@ const WeatherApp = () => {
                 wind: 8.8,
                 humidity: 85,
                 info: "Clima chuvoso detectado. Use guarda-chuva, proteja-se e evite áreas com risco de alagamento.",
-                hasAlert: null,
+                hasAlert: false,
             }); // Fallback para dados mockados
             setIsLoading(false);
         }
@@ -33,6 +43,8 @@ const WeatherApp = () => {
     useEffect(() => {
         fetchWeatherData();
     }, []);
+
+    const displayAlert = testAlertMode || weatherData?.hasAlert;
 
     if (isLoading) {
         return (
@@ -58,7 +70,7 @@ const WeatherApp = () => {
                 <Text style={styles.temperature}>{Math.round(weatherData.temperature)}°</Text>
                 {/* Ícone abaixo da temperatura */}
                 <Image
-                    source={require('./assets/nublado.png')}
+                    source={conditionIcons[weatherData.condition] || conditionIcons.nublado} // Fallback para "nublado"
                     style={styles.weatherIcon}
                 />
                 <View style={styles.iconRow}>
@@ -78,8 +90,26 @@ const WeatherApp = () => {
             </ImageBackground>
 
             {/* Seção de Informações */}
-            <View style={styles.infoSection}>
-                <Text style={styles.infoText}>{weatherData.info}</Text>
+            <View
+                style={[
+                    styles.infoSection,
+                    displayAlert && styles.alertInfoSection,
+                ]}
+            >
+                {displayAlert && (
+                    <View style={styles.alertRow}>
+                        <Text style={styles.alertIcon}>⚠️</Text>
+                        <Text style={styles.alertText}>Tempestade</Text>
+                    </View>
+                )}
+                <Text
+                    style={[
+                        styles.infoText,
+                        displayAlert && styles.alertInfoText,
+                    ]}
+                >
+                    {weatherData.info}
+                </Text>
             </View>
 
             {/* Barra de Navegação */}
@@ -90,9 +120,10 @@ const WeatherApp = () => {
                 <TouchableOpacity style={styles.navButton} onPress={() => setCurrentPage('emergency')}>
                     <Text style={styles.navText}>Emergência</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.navButton}>
-                    <Text style={styles.navText}>Loja</Text>
-                </TouchableOpacity>
+               <TouchableOpacity style={styles.navButton}>
+    <Text style={styles.navText}>Loja</Text>
+</TouchableOpacity>
+
             </View>
         </View>
     );
@@ -101,7 +132,7 @@ const WeatherApp = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000', // Fundo preto
+        backgroundColor: '#000',
         padding: 20,
     },
     card: {
@@ -121,11 +152,12 @@ const styles = StyleSheet.create({
         fontSize: 90,
         color: '#fff',
         fontWeight: 'bold',
+        marginBottom: -10,
     },
     weatherIcon: {
-        marginTop: 2, // Espaçamento abaixo da temperatura
-        width: 180,
-        height: 180,
+        marginTop: 0,
+        width: 250,
+        height: 250,
     },
     iconRow: {
         flexDirection: 'row',
@@ -154,6 +186,30 @@ const styles = StyleSheet.create({
         fontSize: 28,
         color: '#aaa',
     },
+    alertInfoSection: {
+        backgroundColor: '#FFEB3B',
+    },
+    alertInfoText: {
+        color: '#000',
+    },
+    alertRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    alertIcon: {
+        fontSize: 50,
+        color: '#FF0000',
+        marginRight: 10,
+        textShadowColor: '#000', // Cor da sombra (preta)
+      textShadowOffset: { width: 4, height: 2 }, // Deslocamento horizontal e vertical
+    textShadowRadius: 3, // 
+    },
+    alertText: {
+        fontSize: 28,
+        color: '#000',
+        fontWeight: 'bold',
+    },
     navigationBar: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -168,9 +224,6 @@ const styles = StyleSheet.create({
     navText: {
         fontSize: 22,
         color: '#fff',
-    },
-    activeNav: {
-        color: '#007BFF', // Cor azul para ativo
     },
     loadingContainer: {
         flex: 1,
