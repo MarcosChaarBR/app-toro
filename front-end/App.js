@@ -18,27 +18,27 @@ const WeatherApp = () => {
     };
 
     const fetchWeatherData = async () => {
-        try {
-            const response = await fetch(
-                'https://cors-anywhere.herokuapp.com/http://5.161.242.174/api-tempo.php'
-            );
-            const data = await response.json();
-            setWeatherData(data);
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Erro ao buscar os dados do tempo:", error);
-            setWeatherData({
-                datetime: "2024-11-20T00:30",
-                condition: "chuvoso",
-                temperature: 19.2,
-                wind: 8.8,
-                humidity: 85,
-                info: "Clima chuvoso detectado. Use guarda-chuva, proteja-se e evite áreas com risco de alagamento.",
-                hasAlert: false,
-            }); // Fallback para dados mockados
-            setIsLoading(false);
-        }
-    };
+    try {
+        const response = await fetch(
+            'https://toro.aquiri.net/back-end/api-tempo.php'
+        );
+        const data = await response.json();
+        setWeatherData(data);
+        setIsLoading(false);
+    } catch (error) {
+        console.error("Erro ao buscar os dados do tempo:", error);
+        setWeatherData({
+            datetime: "2024-11-20T00:30",
+            condition: "chuvoso",
+            temperature: 19.2,
+            wind: 8.8,
+            humidity: 85,
+            info: "Clima chuvoso detectado. Use guarda-chuva, proteja-se e evite áreas com risco de alagamento.",
+            hasAlert: false,
+        }); // Fallback para dados mockados
+        setIsLoading(false);
+    }
+};
 
     useEffect(() => {
         fetchWeatherData();

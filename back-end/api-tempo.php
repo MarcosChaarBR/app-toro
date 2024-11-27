@@ -6,7 +6,6 @@ header('Access-Control-Allow-Headers: Content-Type');
 require_once 'WeatherDataSaver.php';
 
 
-// Array com mensagens baseadas nas condições
 $conditionMessages = [
     "ensolarado" => "Em dias ensolarados, a temperatura é alta e o céu claro. Use protetor solar, beba água e evite exposição direta ao sol por longos períodos.",
     "chuvoso" => "Clima chuvoso detectado. Use guarda-chuva, proteja-se e evite áreas com risco de alagamento.",
@@ -20,14 +19,10 @@ $weatherDataSaver = new WeatherDataSaver();
 $weatherDataSaver->fetchAndSaveData();
 
 
-
-// Lendo os dados do JSON gerado
 $dataFromFile = file_get_contents('weather_data.json');
 $decodedData = json_decode($dataFromFile, true);
 
-// Fazendo cálculo (simulação de algum processamento com os dados)
-// Neste exemplo, apenas adicionamos um alerta se a temperatura for maior que 35 graus
-// Fazendo cálculo (simulação de algum processamento com os dados)
+
 if (isset($decodedData['wind']) && $decodedData['wind'] > 70) {
     $decodedData['hasAlert'] = true;
     $decodedData['info'] = "Alerta de tempestade: Ventos extremamente fortes detectados! Evite áreas abertas.";
