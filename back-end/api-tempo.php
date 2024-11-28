@@ -36,7 +36,7 @@ if (isset($decodedData['wind']) && $decodedData['wind'] > 70) {
     $decodedData['info'] = "Sem alertas no momento.";
 }
 
-$decodedData['info'] = $conditionMessages[$decodedData['condition']] ?? "Condição não reconhecida. Consulte fontes confiáveis para mais informações.";
+$decodedData['info'] = $conditionMessages[$decodedData['condition']] ?? "Condição climática estável no momento. Aproveite o dia, mas esteja atento a mudanças repentinas.";
 
 echo json_encode($decodedData);
 ?>
