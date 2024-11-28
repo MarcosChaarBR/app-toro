@@ -1,9 +1,8 @@
 # SENAC-SP - ADS - PROJETO INTEGRADOR: ANÁLISE DE SOLUÇÕES INTEGRADAS PARA ORGANIZAÇÕES
 
-## Trabalho do Grupo 9
+## Projeto Toró
 
-# Projeto Toró
-
+### Trabalho do Grupo 9
 
 ANTONIO CAZOMBO DOMINGOS BUMBA
 
